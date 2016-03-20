@@ -14,6 +14,43 @@ class Member {
         }
     }
 
+    public function insert($params) {
+        /* 引数の形式
+            $params = array(
+                'name' => 'kashiwagi',
+                'email' => 'kashiwagi@example.com'
+                );
+        */
+
+        // SQLの宣言 membersテーブルへのINSERT文
+        $sql = "insert into members (najdsaifodspjfiosdapjfiosdpjfisaodpjfiosdame, email, created_at, updated_at)
+                values (:name, :email, :created_at, :updated_at)";
+
+        // PDOStatementを準備
+        $stmt = $this->dbh->prepare($sql);
+
+        // bindParamする
+        $now = date('Y-m-d H:i:s'); // 時刻を取得
+
+        $stmt->bindParam(":name", $params['name']);
+        $stmt->bindParam(":email", $params['email']);
+        $stmt->bindParam(":created_at", $now);
+        $stmt->bindParam(":updated_at", $now);
+
+        // 実行する
+        return $stmt->execute();
+
+
+        // if ($stmt->execute()) {
+        //     // 保存成功時
+        //     echo '保存できたよ！！';
+        //     return true;
+        // } else {
+        //     // 保存失敗
+        //     echo '保存できませんでした...';
+        //     return false
+        // }
+    }
 
 
 }
@@ -26,8 +63,24 @@ $data_1 = array(
     'email' => 'kashiwagi@example.com'
     );
 
-// $member->insert($data_1);
 
+if ($member->insert($data_1)) {
+    echo '保存に成功しました!!!';
+} else {
+    echo '保存に失敗しました...';
+}
+
+
+
+/* CakePHPの場合
+if ($this->Post->save($this->request->data)) {
+    // 保存成功
+    $this->Flash->success('保存に成功しました!!!');
+} else {
+    // 保存出来なかった場合
+    $this->Flash->error('保存に失敗しました...')
+}
+*/
 
 /*
 
