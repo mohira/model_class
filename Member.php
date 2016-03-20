@@ -51,7 +51,22 @@ class Member {
 
     }
 
+    public function findOneById($id) {
+        // SQL用意
+        $sql = "select * from members where id = :id";
 
+        // prepare()
+        $stmt = $this->dbh->prepare($sql);
+
+        // bindParam()
+        $stmt->bindParam(":id", $id);
+
+        // 実行
+        $stmt->execute();
+
+        // 取得したレコードを返す
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
 }
 
@@ -74,12 +89,20 @@ $members = $member->findAll();
 
 // var_dump($members); // 全てのレコードが 配列形式 で 格納されている
 
+// if ($record_1 = $member->findOneById(3)) {
+//     echo 'レコードがありました！';
+// } else {
+//     echo 'ありませんでした。。。';
+// }
 
+$record_1 = $member->findOneById(4);
 
+var_dump($record_1);
 
+$record_not_find = $member->findOneById(000000);
 
-
-
+echo '<hr>';
+var_dump($record_not_find);
 
 
 
