@@ -15,12 +15,6 @@ class Member {
     }
 
     public function insert($params) {
-        /* 引数の形式
-            $params = array(
-                'name' => 'kashiwagi',
-                'email' => 'kashiwagi@example.com'
-                );
-        */
 
         // SQLの宣言 membersテーブルへのINSERT文
         $sql = "insert into members (najdsaifodspjfiosdapjfiosdpjfisaodpjfiosdame, email, created_at, updated_at)
@@ -40,16 +34,6 @@ class Member {
         // 実行する
         return $stmt->execute();
 
-
-        // if ($stmt->execute()) {
-        //     // 保存成功時
-        //     echo '保存できたよ！！';
-        //     return true;
-        // } else {
-        //     // 保存失敗
-        //     echo '保存できませんでした...';
-        //     return false
-        // }
     }
 
     public function findAll() {
@@ -86,57 +70,9 @@ $data_1 = array(
 //     echo '保存に失敗しました...';
 // }
 
-
-
-/* CakePHPの場合
-if ($this->Post->save($this->request->data)) {
-    // 保存成功
-    $this->Flash->success('保存に成功しました!!!');
-} else {
-    // 保存出来なかった場合
-    $this->Flash->error('保存に失敗しました...')
-}
-*/
-
-/*
-
-// functions.php
-function connectDb() {
-    try
-    {
-        return new POD(DSN, DB_USER, DB_PASSWORD);
-    }
-    catch(PDOException $e)
-    {
-        echo $e->getMessage();
-    }
-}
-
-
-// config.php
-define('DSN', 'mysql:host=localhost;dbname=sample_db;charset=utf8');
-define('DB_USER', 'root');
-define('DB_PASSWORD', '');
-
-// index.php
-require 'config.php';
-require 'functions.php';
-
-
-$dbh = connectDb();
-
-$sql = "";
-$stmt = $dbh->prepare($sql);
-$stmt->bindParam(":id", $id)
-$stmt->execute();
-
-*/
-
-
-
 $members = $member->findAll();
 
-var_dump($members); // 全てのレコードが 配列形式 で 格納されている
+// var_dump($members); // 全てのレコードが 配列形式 で 格納されている
 
 
 
