@@ -52,6 +52,22 @@ class Member {
         // }
     }
 
+    public function findAll() {
+        // SQL宣言
+        $sql = "select * from members";
+
+        // prepare()
+        $stmt = $this->dbh->prepare($sql);
+
+        // 実行
+        $stmt->execute();
+
+        // 値を返す
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    }
+
+
 
 }
 
@@ -64,11 +80,11 @@ $data_1 = array(
     );
 
 
-if ($member->insert($data_1)) {
-    echo '保存に成功しました!!!';
-} else {
-    echo '保存に失敗しました...';
-}
+// if ($member->insert($data_1)) {
+//     echo '保存に成功しました!!!';
+// } else {
+//     echo '保存に失敗しました...';
+// }
 
 
 
@@ -117,6 +133,10 @@ $stmt->execute();
 */
 
 
+
+$members = $member->findAll();
+
+var_dump($members); // 全てのレコードが 配列形式 で 格納されている
 
 
 
