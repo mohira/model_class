@@ -17,7 +17,7 @@ class Member {
     public function insert($params) {
 
         // SQLの宣言 membersテーブルへのINSERT文
-        $sql = "insert into members (najdsaifodspjfiosdapjfiosdpjfisaodpjfiosdame, email, created_at, updated_at)
+        $sql = "insert into members (name, email, created_at, updated_at)
                 values (:name, :email, :created_at, :updated_at)";
 
         // PDOStatementを準備
