@@ -24,15 +24,55 @@ class Model {
     }
 
     public function insert($params) {
-        $sql = "insert into members (name, email, created_at, updated_at)
-                values (:name, :email, :created_at, :updated_at)";
+        /*
+        $data_1 = array(
+            'name' => 'Kashiwagi',
+            'email' => 'kashiwagi@example.com',
+        );
+        */
 
-        return $this->execute($sql, array(
-            ':name'       => $params['name'],
-            ':email'      => $params['email'],
-            ':created_at' => date('Y-m-d H:i:s'),
-            ':updated_at' => date('Y-m-d H:i:s')
-            ));
+        $columns = array_keys($params);
+
+        $columns[] = 'created_at';
+        $columns[] = 'updated_at';
+
+        $parameters = array();
+        /*
+            'プレースホルダ' => 値,
+
+            ':name' => 'ohira',
+            ':email' => 'ohira@example.com'
+
+        */
+        $now = date('Y-m-d H:i:s');
+        $params['created_at'] = $now;
+        $params['updated_at'] = $now;
+
+        foreach ($columns as $column) {
+
+            if (isset($params[$column])) {
+                $parameters[':'.$column] = $params[$column];
+            }
+        }
+
+        // var_dump($parameters);
+        // var_dump($columns);
+        // $sql = "insert into
+        //         members
+        //         (name, email, created_at, updated_at)
+        //         values
+        //         (:name, :email, :created_at, :updated_at)";
+
+
+        $sql = sprintf('insert into %s (%s) values (%s)',
+                $this->tableName,
+                implode(',', $columns),
+                implode(',', array_keys($parameters))
+            );
+
+        // var_dump($sql);
+
+        return $this->execute($sql, $parameters);
     }
 
     public function findAll() {
@@ -88,8 +128,6 @@ class Model {
 
 
 class Member extends Model {
-    public $dbh;
-
     public $tableName = 'members';
 }
 
@@ -99,12 +137,12 @@ $member = new Member();
 
 // /*** 追加 ***/
 
-// $data_1 = array(
-//     'name' => 'Kashiwagi',
-//     'email' => 'kashiwagi@example.com',
-// );
+$data_1 = array(
+    'name' => 'Kashiwagi',
+    'email' => 'kashiwagi@example.com',
+);
 
-// $member->insert($data_1);
+$member->insert($data_1);
 
 
 
@@ -117,14 +155,14 @@ $member = new Member();
 
 
 // /*** 削除 ***/
-$member->delete(42);
+// $member->delete(42);
 
 
 // /*** 編集 ***/
-// $edit_data = array(
-//     'id' => 2,
-//     'name' => 'EDIT_NAME',
-//     'email' => 'EDIT_NAME@example.com',
-// );
+$edit_data = array(
+    'id' => 2,
+    'name' => 'EDIT_NAME',
+    'email' => 'EDIT_NAME@example.com',
+);
 
 // $member->update($edit_data);
