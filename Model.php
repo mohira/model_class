@@ -47,14 +47,15 @@ class Model {
     }
 
     public function findOneById($id) {
-        $sql = "select * from members where id = :id";
+        $sql = sprintf('select * from %s where id = :id', $this->tableName);
 
         return $this->findOne($sql, array(':id' => $id));
     }
 
     public function delete($id) {
         if ($this->findOneById($id)) {
-            $sql = "delete from members where id = :id";
+            $sql = sprintf('delete from %s where id = :id', $this->tableName);
+
             $this->execute($sql, array(':id' => $id));
 
             return true;
@@ -108,13 +109,15 @@ $member = new Member();
 
 
 // /*** 取得 ***/
-// $record_1 = $member->findOneById(1);
-$records  = $member->findAll();
-var_dump($records);
+// $record_1 = $member->findOneById(40);
+// var_dump($record_1);
+
+// $records  = $member->findAll();
+// var_dump($records);
 
 
 // /*** 削除 ***/
-// $member->delete(1);
+$member->delete(42);
 
 
 // /*** 編集 ***/
