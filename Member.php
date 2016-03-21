@@ -68,6 +68,27 @@ class Member {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    // $member->delete(3); ← みたいな感じで書くと動くように実装！！
+    public function delete($id) {
+
+        if ($this->findOneById($id)) {
+            // 指定したIDを持つレコードが存在した時
+            $sql = "delete from members where id = :id";
+
+            $stmt = $this->dbh->prepare($sql);
+
+            $stmt->bindParam(":id", $id);
+
+            return $stmt->execute();
+
+        }
+
+        // レコードが見つからなかった時
+        return false;
+    }
+
+
+
 }
 
 
@@ -85,6 +106,7 @@ $data_1 = array(
 //     echo '保存に失敗しました...';
 // }
 
+
 $members = $member->findAll();
 
 // var_dump($members); // 全てのレコードが 配列形式 で 格納されている
@@ -97,14 +119,19 @@ $members = $member->findAll();
 
 $record_1 = $member->findOneById(4);
 
-var_dump($record_1);
+// var_dump($record_1);
 
-$record_not_find = $member->findOneById(000000);
+// $record_not_find = $member->findOneById(000000);
 
-echo '<hr>';
-var_dump($record_not_find);
+// echo '<hr>';
+// var_dump($record_not_find);
 
 
+if ($member->delete(5)) {
+    echo "削除できた！！";
+} else {
+    echo 'そんなデータはありませんでした';
+}
 
 
 
