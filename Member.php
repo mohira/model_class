@@ -14,25 +14,44 @@ class Member {
         }
     }
 
+    public function execute($sql, $params = array()) {
+        // SQL宣言 → 引数で渡されるので書かなくてOK
+
+        // プリペアードステートメントの準備
+        $stmt = $this->dbh->prepare($sql);
+
+        // bindParam()はせずに, PDOStatement::execute()に配列を渡す
+        $stmt->execute($params);
+
+        return $stmt;
+    }
+
     public function insert($params) {
 
         // SQLの宣言 membersテーブルへのINSERT文
         $sql = "insert into members (name, email, created_at, updated_at)
                 values (:name, :email, :created_at, :updated_at)";
 
-        // PDOStatementを準備
-        $stmt = $this->dbh->prepare($sql);
+        return $this->execute($sql, array(
+            ':name'       => $params['name'],
+            ':email'      => $params['email'],
+            ':created_at' => date('Y-m-d H:i:s'),
+            ':updated_at' => date('Y-m-d H:i:s')
+            ));
 
-        // bindParamする
-        $now = date('Y-m-d H:i:s'); // 時刻を取得
+        // // PDOStatementを準備
+        // $stmt = $this->dbh->prepare($sql);
 
-        $stmt->bindParam(":name", $params['name']);
-        $stmt->bindParam(":email", $params['email']);
-        $stmt->bindParam(":created_at", $now);
-        $stmt->bindParam(":updated_at", $now);
+        // // bindParamする
+        // $now = date('Y-m-d H:i:s'); // 時刻を取得
 
-        // 実行する
-        return $stmt->execute();
+        // $stmt->bindParam(":name", $params['name']);
+        // $stmt->bindParam(":email", $params['email']);
+        // $stmt->bindParam(":created_at", $now);
+        // $stmt->bindParam(":updated_at", $now);
+
+        // // 実行する
+        // return $stmt->execute();
 
     }
 
@@ -40,14 +59,14 @@ class Member {
         // SQL宣言
         $sql = "select * from members";
 
-        // prepare()
-        $stmt = $this->dbh->prepare($sql);
+        return $this->execute($sql)->fetchAll(PDO::FETCH_ASSOC);
 
-        // 実行
-        $stmt->execute();
+        // // prepare()
+        // $stmt = $this->dbh->prepare($sql);
 
-        // 値を返す
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // // 実行
+        // $stmt->execute();
+
 
     }
 
@@ -166,6 +185,13 @@ $data_1 = array(
     'email' => 'kashiwagi@example.com'
     );
 
+$data_2 = array(
+    'name' => 'ohira',
+    'email' => 'ohira@example.com'
+    );
+
+// $member->insert($data_2);
+
 
 // if ($member->insert($data_1)) {
 //     echo '保存に成功しました!!!';
@@ -173,10 +199,11 @@ $data_1 = array(
 //     echo '保存に失敗しました...';
 // }
 
-
 $members = $member->findAll();
 
-// var_dump($members); // 全てのレコードが 配列形式 で 格納されている
+var_dump($members); // 全てのレコードが 配列形式 で 格納されている
+
+exit;
 
 // if ($record_1 = $member->findOneById(3)) {
 //     echo 'レコードがありました！';
