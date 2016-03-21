@@ -70,21 +70,15 @@ class Member {
 
     }
 
+    public function findOne($sql, $params = array()) {
+        return $this->execute($sql, $params)->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function findOneById($id) {
         // SQL用意
         $sql = "select * from members where id = :id";
 
-        // prepare()
-        $stmt = $this->dbh->prepare($sql);
-
-        // bindParam()
-        $stmt->bindParam(":id", $id);
-
-        // 実行
-        $stmt->execute();
-
-        // 取得したレコードを返す
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $this->findOne($sql, array(':id' => $id));
     }
 
     // $member->delete(3); ← みたいな感じで書くと動くように実装！！
@@ -201,9 +195,8 @@ $data_2 = array(
 
 $members = $member->findAll();
 
-var_dump($members); // 全てのレコードが 配列形式 で 格納されている
+// var_dump($members); // 全てのレコードが 配列形式 で 格納されている
 
-exit;
 
 // if ($record_1 = $member->findOneById(3)) {
 //     echo 'レコードがありました！';
@@ -211,10 +204,10 @@ exit;
 //     echo 'ありませんでした。。。';
 // }
 
-$record_1 = $member->findOneById(4);
+$record_1 = $member->findOneById(20);
 
-// var_dump($record_1);
-
+var_dump($record_1);
+exit;
 // $record_not_find = $member->findOneById(000000);
 
 // echo '<hr>';
