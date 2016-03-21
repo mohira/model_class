@@ -143,14 +143,22 @@ class Member {
         $sql = "update members set name = :name, email = :email,
                 updated_at = :updated_at where id = :id";
 
-        $stmt = $this->dbh->prepare($sql);
+        $this->execute($sql, array(
+            ':id'         => $params['id'],
+            ':name'       => $params['name'],
+            ':email'      => $params['email'],
+            ':updated_at' => date('Y-m-d H:i:s')
+            ));
 
-        $stmt->bindParam(":id"        , $params['id']);
-        $stmt->bindParam(":name"      , $params['name']);
-        $stmt->bindParam(":email"     , $params['email']);
-        $stmt->bindParam(":updated_at", date('Y-m-d H:i:s'));
+        return true;
+        // $stmt = $this->dbh->prepare($sql);
 
-        return $stmt->execute();
+        // $stmt->bindParam(":id"        , $params['id']);
+        // $stmt->bindParam(":name"      , $params['name']);
+        // $stmt->bindParam(":email"     , $params['email']);
+        // $stmt->bindParam(":updated_at", date('Y-m-d H:i:s'));
+
+        // return $stmt->execute();
 
     }
 
@@ -221,11 +229,14 @@ $record_1 = $member->findOneById(20);
 
 // 編集用データ
 $edit_data = array(
-    'id' => 168888888888888888888888888888,
+    'id' => 20,
     'name' => 'EDIT_NAME_2222222222222',
     // 'email' => 'EDIT_NAME@example.com',
 );
 
+$member->update($edit_data);
+
+exit;
 
 // 編集処理
 $result = $member->update($edit_data);
