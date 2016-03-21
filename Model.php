@@ -57,11 +57,11 @@ class Model {
 
         // var_dump($parameters);
         // var_dump($columns);
-        // $sql = "insert into
-        //         members
-        //         (name, email, created_at, updated_at)
-        //         values
-        //         (:name, :email, :created_at, :updated_at)";
+        $sql = "insert into
+                members
+                (name, email, created_at, updated_at)
+                values
+                (:name, :email, :created_at, :updated_at)";
 
 
         $sql = sprintf('insert into %s (%s) values (%s)',
@@ -105,23 +105,61 @@ class Model {
     }
 
     public function update($params) {
-        $oldRecord = $this->findOneById($params['id']);
+
+        // 既存レコードの取得
+
+        if (empty($params['id'])) {
+            return false;
+        }
+
+        $id = $params['id'];
+
+        $oldRecord = $this->findOneById($id);
 
         if (!$oldRecord) {
-            return 'NotFound';
+            return false;
         }
-        $params = array_merge($oldRecord, $params);
+
+        // SQLを作る
+        unset($params['id']);
+
+        $params['updated_at'] = date('Y-m-d H:i:s');
+
+        // var_dump($params);exit;
+
+        $parameters = array();
+
+        $columns = array_keys($params);
+
+        foreach ($columns as $column) {
+            if (isset($params[$column])) {
+                $parameters[':'.$column] = $params[$column];
+            }
+        }
+
+        // var_dump($parameters);exit;
+
         $sql = "update members set name = :name, email = :email,
                 updated_at = :updated_at where id = :id";
 
-        $this->execute($sql, array(
-            ':id'         => $params['id'],
-            ':name'       => $params['name'],
-            ':email'      => $params['email'],
-            ':updated_at' => date('Y-m-d H:i:s')
-            ));
+        $update = array(); // カラム名 = :カラム名 というパーツ
 
-        return true;
+        foreach ($columns as $column) {
+            $update[] = $column . ' = :' . $column;
+        }
+
+        // var_dump($update);exit;
+        // var_dump(implode(',', $update));
+
+        $sql = sprintf('update %s set %s where id = %d',
+                $this->tableName, // テーブル名
+                implode(',', $update), // カラム1 = :カラム1, カラム2 = :カラム名2 ,...
+                $id  // 対象となるレコードのid
+            );
+
+        // 実行します
+        return $this->execute($sql, $parameters);
+
     }
 
 }
@@ -142,7 +180,7 @@ $data_1 = array(
     'email' => 'kashiwagi@example.com',
 );
 
-$member->insert($data_1);
+// $member->insert($data_1);
 
 
 
@@ -160,9 +198,9 @@ $member->insert($data_1);
 
 // /*** 編集 ***/
 $edit_data = array(
-    'id' => 2,
+    'id' => 63,
     'name' => 'EDIT_NAME',
     'email' => 'EDIT_NAME@example.com',
 );
 
-// $member->update($edit_data);
+$member->update($edit_data);
