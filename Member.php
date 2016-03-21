@@ -88,11 +88,9 @@ class Member {
             // 指定したIDを持つレコードが存在した時
             $sql = "delete from members where id = :id";
 
-            $stmt = $this->dbh->prepare($sql);
+            $this->execute($sql, array(':id' => $id));
 
-            $stmt->bindParam(":id", $id);
-
-            return $stmt->execute();
+            return true;
 
         }
 
@@ -206,13 +204,14 @@ $members = $member->findAll();
 
 $record_1 = $member->findOneById(20);
 
-var_dump($record_1);
-exit;
+// var_dump($record_1);
+// exit;
 // $record_not_find = $member->findOneById(000000);
 
 // echo '<hr>';
 // var_dump($record_not_find);
 
+// $member->delete(21);
 
 // if ($member->delete(5)) {
 //     echo "削除できた！！";
